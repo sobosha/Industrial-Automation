@@ -28,8 +28,32 @@ for j = 1:n
         j, pathA_time(j), pathB_time(j), faster);
 end
 
-testA = [1, 2, 3, 4, 5];
-testB = [6, 7, 8, 9, 10];
-[testCmax, ~] = computeCMAX(testA, testB, P);
-fprintf('\nTest: J1-J5 on Path A, J6-J10 on Path B → Cmax = %d\n', testCmax);
+
+
+
+
+%% assign jobs to fastest path
+jobsA = [];
+jobsB = [];
+for j = 1:n
+    if pathA_time(j) <= pathB_time(j)
+        jobsA = [jobsA, j];%path A faster
+    else
+        jobsB = [jobsB, j];%path B faster
+    end
+end
+
+
+
+% sort jobs within each path by their path processing time(shortest first)
+% this is SPT (Shortest Processing Time) rule
+[~, idxA] = sort(pathA_time(jobsA));
+jobsA = jobsA(idxA);
+[~, idxB] = sort(pathB_time(jobsB));
+jobsB = jobsB(idxB);
+[cmax1, ~] = computeCMAX(jobsA, jobsB, P);
+fprintf('Cmax = %d\n', cmax1);
+bestCmax = cmax1;
+bestA = jobsA;
+bestB = jobsB;
 
